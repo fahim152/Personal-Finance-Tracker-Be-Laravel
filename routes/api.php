@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\FinanceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('finance-entry')->group(function () {
+    Route::get('testreturn', [FinanceController::class, 'testReturn']);
+    Route::post('', [FinanceController::class, 'createEntry']);
+    Route::get('/', [FinanceController::class, 'getAllEntries']);
+    Route::get('/calculate-balance', [FinanceController::class, 'calculateBalance']);
+    Route::get('/expenses-summary', [FinanceController::class, 'expensesSummary']);
+    Route::get('/{id}', [FinanceController::class, 'readEntry']);
+    Route::patch('/{id}', [FinanceController::class, 'updateEntry']);
+    Route::delete('/{id}', [FinanceController::class, 'deleteEntry']);
 });

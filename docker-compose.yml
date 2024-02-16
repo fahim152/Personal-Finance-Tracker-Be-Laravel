@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  app:
+    entrypoint: /usr/local/bin/entrypoint.sh
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: finace_tracker-app-be
+    container_name: finace_tracker-app-be
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: laravel-app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    ports:
+      - "8090:80"
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: laravel-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: finance_tracker
+      MYSQL_USER: dk_ft
+      MYSQL_PASSWORD: mysql123@
+      MYSQL_ROOT_PASSWORD: mysql123@
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  dbdata:
+    driver: local
